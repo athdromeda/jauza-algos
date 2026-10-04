@@ -1,7 +1,11 @@
 import createCSPICE from "./cspice.cjs";
 import { CDN_BASE, LEAP_SECONDS_KERNEL, EPHEMERIS_MAP } from "./kernels.js";
 import { jdToUtcString } from "./time.js";
-import type { BodyPosition, CspiceModule } from "./types.js";
+import type {
+  AberrationCorrection,
+  BodyPosition,
+  CspiceModule,
+} from "./types.js";
 
 export class CspiceNotReadyError extends Error {
   constructor() {
@@ -81,15 +85,19 @@ export class CspiceEngine {
     return this.#mod;
   }
 
-  computeMoon(jd: number): BodyPosition {
-    return this.#compute("MOON", jd);
+  computeMoon(jd: number, abcorr: AberrationCorrection = "NONE"): BodyPosition {
+    return this.#compute("MOON", jd, abcorr);
   }
 
-  computeSun(jd: number): BodyPosition {
-    return this.#compute("SUN", jd);
+  computeSun(jd: number, abcorr: AberrationCorrection = "NONE"): BodyPosition {
+    return this.#compute("SUN", jd, abcorr);
   }
 
-  #compute(target: string, jd: number): BodyPosition {
+  #compute(
+    target: string,
+    jd: number,
+    abcorr: AberrationCorrection,
+  ): BodyPosition {
     const mod = this.#requireReady();
 
     const utc = jdToUtcString(jd);
@@ -103,7 +111,7 @@ export class CspiceEngine {
     const targPtr = writeCString(mod, target);
     const obsPtr = writeCString(mod, "EARTH");
     const refPtr = writeCString(mod, "J2000");
-    const abcorrPtr = writeCString(mod, "NONE");
+    const abcorrPtr = writeCString(mod, abcorr);
     const statePtr = mod._malloc(48);
     const ltPtr = mod._malloc(8);
     mod._spkezr_c(targPtr, et, refPtr, abcorrPtr, obsPtr, statePtr, ltPtr);

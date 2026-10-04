@@ -4,6 +4,9 @@ export interface BodyPosition {
   r: number;
 }
 
+/** CSPICE aberration-correction flag used when reading a body state. */
+export type AberrationCorrection = "NONE" | "CN+S";
+
 export interface CspiceModule {
   FS: {
     writeFile(path: string, data: Uint8Array): void;

@@ -7,17 +7,18 @@ import type {
 } from "@jauza/core";
 import { cspice } from "./engine.js";
 import { EPHEMERIS_MAP } from "./kernels.js";
-import type { BodyPosition } from "./types.js";
+import type { AberrationCorrection, BodyPosition } from "./types.js";
 
 const bodyConfig = (
   body: "MOON" | "SUN",
-  compute: (jd: number) => BodyPosition,
+  compute: (jd: number, abcorr: AberrationCorrection) => BodyPosition,
 ): BodyConfig => ({
   outputType: "EQUATORIAL",
   origin: "earth",
   system: "equatorial",
   reference: equatorialJ2000,
-  formula: ({ jd }) => compute(jd) as GeocentricEcliptic,
+  formula: ({ jd }) => compute(jd, "NONE") as GeocentricEcliptic,
+  apparentFormula: ({ jd }) => compute(jd, "CN+S") as GeocentricEcliptic,
   distanceUnit: "km",
 });
 
@@ -27,7 +28,10 @@ const metadata = (name: string): ExtendedAlgorithmMetadata => ({
   validity: {
     note: `${name} ephemeris (ICRS ≈ FK5/J2000); UTC conversion uses naif0012.tls and does not account for leap seconds after 2016-12-31`,
   },
-  corrections: [],
+  // The dedicated apparent source uses CSPICE "CN+S": converged Newtonian
+  // light-time plus stellar aberration. NAIF does not include relativistic
+  // (gravitational) light deflection, so it is deliberately not claimed.
+  corrections: ["light-time", "stellar-aberration"],
 });
 
 export const jplDe = {
@@ -43,8 +47,8 @@ export const jplDe = {
       name: "JplDe",
       metadata: metadata(name),
       bodies: ["MOON", "SUN"],
-      MOON: bodyConfig("MOON", (jd) => cspice.computeMoon(jd)),
-      SUN: bodyConfig("SUN", (jd) => cspice.computeSun(jd)),
+      MOON: bodyConfig("MOON", (jd, abcorr) => cspice.computeMoon(jd, abcorr)),
+      SUN: bodyConfig("SUN", (jd, abcorr) => cspice.computeSun(jd, abcorr)),
     };
   },
   get ready(): Promise<void> {

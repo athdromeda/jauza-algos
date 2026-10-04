@@ -19,6 +19,13 @@ The returned coordinates are geometric equatorial J2000 right ascension and
 declination, with distances in kilometres. Use the adapter with `@jauza/core`
 for frame conversion and observer calculations.
 
+The adapter also publishes a dedicated apparent source computed with CSPICE
+`CN+S` (converged Newtonian light-time plus stellar aberration). Through
+`@jauza/core`, `geometric()` reads the geometric `NONE` state while the
+apparent accessors (`ra`, `dec`, `lambda`, `beta`) and topocentric
+`alt`/`az`/`horizontal` read the `CN+S` state. Apparent results exclude
+gravitational light deflection and atmospheric refraction.
+
 Supported series are `de421-slim`, `de430-slim`, `de435-slim`, `de440-slim`,
 `de440s-slim`, and `de442-slim`. Only one series can be initialized per process;
 calling `load()` with a different series after initialization throws an error.
