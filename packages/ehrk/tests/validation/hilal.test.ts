@@ -135,14 +135,28 @@ describe("validation: hilal against ehrk-calculations.md", () => {
     },
   );
 
-  it("visibility: the Ramadan 1446 Cibeas crescent is below every criterion", () => {
-    expect(canonicalRukyat().visibility()).toEqual({
-      odeh: false,
-      newMabims: false,
-      yallop: false,
-      danjon: false,
-      diyanet: false,
-    });
+  it("visibility: the Ramadan 1446 Cibeas crescent is below every boolean criterion", () => {
+    const result = canonicalRukyat().visibility();
+    expect(result.newMabims).toBe(false);
+    expect(result.diyanet).toBe(false);
+    expect(result.danjon).toBe(false);
+
+    // yallop/odeh are now auditable assessments with finite scores and zones.
+    expect(Number.isFinite(result.yallop.q)).toBe(true);
+    expect(result.yallop.zone.length).toBe(1);
+    expect(Number.isFinite(result.odeh.v)).toBe(true);
+    expect(result.odeh.zone.length).toBe(1);
+
+    // The geometry is evaluated at best time = sunset + 4/9 lag.
+    expect(result.geometry.time.jd).toBeCloseTo(
+      result.sunset.jd + (4 / 9) * (result.moonset.jd - result.sunset.jd),
+      10
+    );
+    expect(Number.isFinite(result.geometry.geocentric.arcvDeg)).toBe(true);
+    expect(Number.isFinite(result.geometry.topocentric.arcvDeg)).toBe(true);
+    expect(Number.isFinite(result.geometry.yallopWidthArcmin)).toBe(true);
+    expect(Number.isFinite(result.geometry.odehWidthArcmin)).toBe(true);
+    expect(result.geometry.moon.distanceKm).toBeGreaterThan(0);
   });
 
   it("format() renders the key hilal values", () => {
