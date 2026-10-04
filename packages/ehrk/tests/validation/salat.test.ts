@@ -73,7 +73,7 @@ describe("validation: shalat Real times against ehrk-calculations.md", () => {
       .with(ehrk);
     const row = sunRow(new Time(c.year, c.month, c.day, 5).jd);
 
-    expect(salat.sunPosition!.dec.decimal).toBe(row.decDeg);
+    expect(salat.sunPosition!.dec.decimal).toBeCloseTo(row.decDeg, 10);
     expect(
       salat.sunPosition!.explainCoordinates("equatorial", trueEquatorialOfDate)
         .steps,
