@@ -1,0 +1,50 @@
+{
+  "name": "@jauza/jpl-de",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "license": "MIT",
+  "keywords": ["astronomy", "ephemeris", "jpl", "spice"],
+  "description": "JPL DE440 Sun and Moon positions through a CSPICE-backed Jauza algorithm adapter",
+  "author": "Muhammad Aniq Athoillah",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/athdromeda/jauza-algos.git",
+    "directory": "packages/jpl-de"
+  },
+  "scripts": {
+    "build": "tsup && cp src/cspice.cjs dist/cspice.cjs && cp src/cspice.d.cts dist/cspice.d.cts",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@jauza/core": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "tsup": "^8.5.1",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "esbuild": "0.28.1"
+  }
+}
