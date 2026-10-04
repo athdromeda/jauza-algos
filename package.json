@@ -22,6 +22,6 @@
     "esbuild": "0.28.1"
   },
   "dependencies": {
-    "@jauza/core": "file:../jauza"
+    "@jauza/core": "^0.1.3"
   }
 }
