@@ -21,7 +21,7 @@
   "license": "MIT",
   "keywords": ["astronomy", "ephemeris", "jpl", "spice"],
   "description": "JPL DE440 Sun and Moon positions through a CSPICE-backed Jauza algorithm adapter",
-  "author": "Muhammad Aniq Athoillah",
+  "author": "athdromeda",
   "repository": {
     "type": "git",
     "url": "https://github.com/athdromeda/jauza-algos.git",
@@ -36,7 +36,7 @@
     "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
-    "@jauza/core": "^0.1.4"
+    "@jauza/core": "^0.1.5"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",
