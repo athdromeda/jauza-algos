@@ -35,7 +35,7 @@ export function createConjunction(router: SeriesRouter) {
     const series = router.seriesFor(anchorJd);
     const eph = ephemerisFor(series);
     const targetStart = Math.floor(anchorJd) - 0.5;
-    const windowStart = targetStart - 1;
+    const windowStart = targetStart - 2;
     const windowEnd = targetStart + 1;
     assertWindowInSeries(series, windowStart, windowEnd);
 
